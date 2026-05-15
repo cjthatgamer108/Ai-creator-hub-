@@ -17,3 +17,11 @@ Learn to use AI tools to grow your audience and monetize your content.
 * AI-Generated Prompt Engineering Guides
 * Custom Notion Templates for Content Calendars
 * Faceless YouTube Channel Starter Kits
+<!DOCTYPE html>
+<html>
+<head><title>AI Creator Hub</title></head>
+<body>
+  <h1>AI Creator Hub is Coming Soon</h1>
+  <p>Check back for the ultimate guide to AI growth.</p>
+</body>
+</html>
