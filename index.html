@@ -3,131 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smarter With AI | Pro</title>
+    <title>Smarter With AI | Pro Dashboard</title>
     <style>
-        :root { --bg: #0f172a; --text: #f8fafc; --accent: #38bdf8; --card: #1e293b; --sidebar: #0b1120; }
-        .theme-white { --bg: #ffffff; --text: #0f172a; --accent: #2563eb; --card: #f1f5f9; --sidebar: #e2e8f0; }
-        .theme-pink { --bg: #1a0b16; --text: #fdf2f8; --accent: #ec4899; --card: #2d1226; --sidebar: #120610; }
+        :root { --bg: #0f172a; --text: #f8fafc; --accent: #38bdf8; --card: rgba(30, 41, 59, 0.7); --sidebar: #0b1120; }
+        .theme-white { --bg: #f8fafc; --text: #0f172a; --accent: #2563eb; --card: rgba(255, 255, 255, 0.8); --sidebar: #f1f5f9; }
+        .theme-pink { --bg: #1a0b16; --text: #fdf2f8; --accent: #ec4899; --card: rgba(45, 18, 38, 0.7); --sidebar: #120610; }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; transition: 0.3s; overflow: hidden; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; transition: background 0.3s, color 0.3s; overflow: hidden; }
         
-        /* Sidebar / History Tab */
-        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; padding: 20px; }
-        .history-item { padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(255,255,255,0.05); font-size: 0.85rem; cursor: pointer; border: 1px solid transparent; }
-        .history-item:hover { border-color: var(--accent); }
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; padding: 25px; z-index: 10; }
+        .history-item { padding: 12px; border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; border: 1px solid transparent; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
 
         /* Main Content */
-        .main-content { flex: 1; overflow-y: auto; position: relative; }
-        .slideshow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; }
-        .slideshow img { width: 100%; height: 100%; object-fit: cover; position: absolute; animation: fade 12s infinite; opacity: 0; }
-        @keyframes fade { 0% {opacity: 0;} 10% {opacity: 1;} 33% {opacity: 1;} 43% {opacity: 0;} }
-
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); sticky; top: 0; }
+        .main-content { flex: 1; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(0,0,0,0.1); backdrop-filter: blur(15px); sticky; top: 0; z-index: 5; }
         
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
+        .container { max-width: 800px; margin: auto; padding: 40px 20px; width: 100%; box-sizing: border-box; }
+        .card { background: var(--card); backdrop-filter: blur(10px); padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
-        /* Paywall / Subscription */
-        .paywall { background: linear-gradient(135deg, #6366f1, #a855f7); padding: 20px; border-radius: 12px; color: white; margin-top: 20px; text-align: center; display: none; }
+        /* Payment Form */
+        #payment-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; z-index: 100; }
+        .payment-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+
+        /* Buttons & Inputs */
+        .btn { background: var(--accent); color: white; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
         
-        .btn { background: var(--accent); color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
-        .social-grid { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .social-btn { padding: 10px; border-radius: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #1e293b; }
+        .login-bubbles { display: flex; gap: 20px; justify-content: center; margin-top: 20px; }
+        .bubble { width: 50px; height: 50px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .bubble:hover { transform: scale(1.1); }
+        .bubble img { width: 25px; height: 25px; }
 
-        textarea { width: 100%; background: rgba(0,0,0,0.2); color: var(--text); border: 1px solid var(--accent); padding: 12px; border-radius: 10px; margin-top: 10px; resize: none; box-sizing: border-box; }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+        textarea { width: 100%; background: rgba(0,0,0,0.2); color: var(--text); border: 2px solid var(--accent); padding: 15px; border-radius: 15px; margin-top: 15px; resize: none; font-size: 1rem; outline: none; }
+        
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 90; backdrop-filter: blur(5px); }
     </style>
 </head>
 <body id="body">
 
-    <!-- History Sidebar -->
+    <div class="overlay" id="overlay" onclick="closePay()"></div>
+
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h3 style="color: var(--accent);">📜 History</h3>
-        <button class="btn" style="margin-bottom: 20px; width: 100%;" onclick="location.reload()">+ New Chat</button>
-        <div id="history-list">
-            <div class="history-item">How to use Luma AI...</div>
-            <div class="history-item">Viral TikTok Hooks...</div>
-            <div class="history-item">Image Prompt: Neon City...</div>
-        </div>
+        <h2 style="font-weight: 900; letter-spacing: -1px; color: var(--accent);">SMARTER AI</h2>
+        <button class="btn" style="width: 100%; margin: 20px 0;" onclick="newChat()">+ New Chat</button>
         
-        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                <div class="theme-dot" style="background: #0f172a;" onclick="setTheme('')"></div>
-                <div class="theme-dot" style="background: #ffffff;" onclick="setTheme('theme-white')"></div>
-                <div class="theme-dot" style="background: #ec4899;" onclick="setTheme('theme-pink')"></div>
+        <div id="history-list" style="flex: 1; overflow-y: auto;">
+            <div class="history-item">✨ How to start a business</div>
+            <div class="history-item">🎨 AI Image Prompt Guide</div>
+        </div>
+
+        <div style="padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="font-size: 0.8rem; opacity: 0.6;">Appearance</p>
+            <div style="display: flex; gap: 12px;">
+                <div onclick="setTheme('')" style="width:25px; height:25px; background:#0f172a; border-radius:50%; cursor:pointer; border:2px solid #fff;"></div>
+                <div onclick="setTheme('theme-white')" style="width:25px; height:25px; background:#ffffff; border-radius:50%; cursor:pointer; border:2px solid #ccc;"></div>
+                <div onclick="setTheme('theme-pink')" style="width:25px; height:25px; background:#ec4899; border-radius:50%; cursor:pointer; border:2px solid #fff;"></div>
             </div>
-            <small>Smarter With AI v2.0</small>
         </div>
     </div>
 
-    <!-- Main View -->
+    <!-- Main Content -->
     <div class="main-content">
-        <div class="slideshow">
-            <img src="https://images.unsplash.com/photo-1620712943543-bcc4628c9757">
-            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995">
-        </div>
-
         <nav class="navbar">
-            <div style="font-weight: bold;">SMARTER WITH AI</div>
-            <button class="btn" onclick="showSub()">💎 Upgrade to Plus</button>
+            <span style="opacity: 0.7;">v2.5 Stable</span>
+            <button class="btn" onclick="openPay()" style="background: linear-gradient(to right, #8b5cf6, #ec4899);">Upgrade to Plus</button>
         </nav>
 
         <div class="container">
-            <!-- Subscription Tab (Hidden by default) -->
-            <div id="sub-tab" class="paywall">
-                <h3>Unlock Smarter With AI Plus</h3>
-                <p>Unlimited Images • Faster Responses • GPT-5 Access</p>
-                <button class="btn" style="background: white; color: black;" onclick="alert('Payment processing simulated...')">$20/month - Get Started</button>
-                <p style="font-size: 0.7rem; margin-top: 10px;" onclick="hideSub()">Close</p>
-            </div>
-
-            <div class="card">
-                <h3>👋 Welcome Back</h3>
-                <p>Login to sync your history across devices.</p>
-                <div class="social-grid">
-                    <div class="social-btn" onclick="alert('Connecting GitHub...')">GH</div>
-                    <div class="social-btn" onclick="alert('Connecting Google...')">G</div>
-                    <div class="social-btn" onclick="alert('Connecting Apple...')">A</div>
+            <div class="card" id="welcome-card">
+                <h2 style="margin-top:0;">Ready to get smarter?</h2>
+                <p style="opacity:0.8;">Sign in to sync your AI history and custom models.</p>
+                <div class="login-bubbles">
+                    <div class="bubble" onclick="window.open('https://google.com', '_blank')"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"></div>
+                    <div class="bubble" onclick="window.open('https://apple.com', '_blank')"><img src="https://cdn-icons-png.flaticon.com/512/888/888841.png"></div>
+                    <div class="bubble" onclick="window.open('https://github.com', '_blank')"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png"></div>
                 </div>
             </div>
 
             <div class="card">
-                <h3>💬 Chat & Imagine</h3>
-                <div id="chat-output" style="height: 100px; overflow-y: auto; font-size: 0.9rem; margin-bottom: 10px; color: var(--accent);"></div>
-                <textarea id="main-input" placeholder="Ask anything or describe an image..."></textarea>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button class="btn" style="flex: 1;" onclick="process('Chat')">Send Message</button>
-                    <button class="btn" style="flex: 1; background: transparent; border: 1px solid var(--accent);" onclick="process('Image')">Generate Image</button>
+                <div id="chat-window" style="height: 120px; overflow-y: auto; margin-bottom: 10px; font-size: 0.95rem;">
+                    <div style="color: var(--accent);">AI: Waiting for your command...</div>
+                </div>
+                <textarea id="user-input" rows="3" placeholder="Type message and press Enter..." onkeypress="handleEnter(event)"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn" style="flex:1" onclick="sendMessage()">Send Message</button>
+                    <button class="btn" style="flex:1; background:transparent; border:1px solid var(--accent);" onclick="sendMessage()">Generate Image</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Payment Modal -->
+    <div class="card" id="payment-modal">
+        <h3 style="text-align:center;">Subscribe to Plus</h3>
+        <p style="text-align:center; font-size:0.8rem; opacity:0.7;">$20.00 / month</p>
+        <label>Card Information</label>
+        <input type="text" class="payment-input" placeholder="1234 5678 9101 1121">
+        <div style="display:flex; gap:10px;">
+            <input type="text" class="payment-input" placeholder="MM/YY">
+            <input type="text" class="payment-input" placeholder="CVC">
+        </div>
+        <input type="text" class="payment-input" placeholder="Cardholder Name">
+        <button class="btn" style="width:100%; margin-top:10px;" onclick="alert('Success! Welcome to Plus.')">Pay Now</button>
+        <p style="text-align:center; cursor:pointer; font-size:0.8rem; margin-top:15px;" onclick="closePay()">Cancel</p>
+    </div>
+
     <script>
-        function setTheme(theme) { document.getElementById('body').className = theme; }
-        
-        function showSub() { document.getElementById('sub-tab').style.display = 'block'; }
-        function hideSub() { document.getElementById('sub-tab').style.display = 'none'; }
+        let currentTheme = '';
 
-        function process(type) {
-            const input = document.getElementById('main-input');
-            const output = document.getElementById('chat-output');
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.getElementById('body').className = theme;
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const chat = document.getElementById('chat-window');
             const history = document.getElementById('history-list');
-            
-            if (!input.value) return;
 
-            // Add to history
-            const newHistory = document.createElement('div');
-            newHistory.className = 'history-item';
-            newHistory.innerText = input.value.substring(0, 20) + "...";
-            history.prepend(newHistory);
+            if (!input.value.trim()) return;
 
-            output.innerHTML = `<em>${type}: Processing your request...</em>`;
+            // Add to history sidebar
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerText = input.value;
+            history.prepend(item);
+
+            // Show in chat
+            chat.innerHTML = `<div style="opacity:0.6;">You: ${input.value}</div><div>AI: Thinking...</div>`;
             
+            const text = input.value;
+            input.value = '';
+
             setTimeout(() => {
-                output.innerHTML = `<strong>AI:</strong> Done! I've handled your ${type.toLowerCase()} request for "${input.value}".`;
-                input.value = "";
-            }, 1000);
+                chat.innerHTML = `<div>AI: I've processed "${text}". How else can I assist?</div>`;
+            }, 8000);
+        }
+
+        function newChat() {
+            // Clears the chat but keeps the theme
+            document.getElementById('chat-window').innerHTML = `<div style="color: var(--accent);">AI: New Chat Started.</div>`;
+            document.getElementById('user-input').value = '';
+            // Note: currentTheme remains active on body
+        }
+
+        function openPay() {
+            document.getElementById('payment-modal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closePay() {
+            document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }
     </script>
 </body>
