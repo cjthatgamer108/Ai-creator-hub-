@@ -1,0 +1,27 @@
+{
+  "name": "primary",
+  "version": "1.0.0",
+  "description": "AI Creator Growth Hub teaches beginners how to use AI tools to grow online, gain more views, build an audience, and make money through content creation, social media, and digital products with simple, practical step-by-step guidance for success. # 🚀 AI Creator Growth Hub Learn to use AI tools to grow your audience and monetize your content.",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild analytics.js --bundle --outfile=dist/analytics.bundle.js --format=iife",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cjthatgamer108/Ai-creator-hub-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cjthatgamer108/Ai-creator-hub-/issues"
+  },
+  "homepage": "https://github.com/cjthatgamer108/Ai-creator-hub-#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
+  }
+}
